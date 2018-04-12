@@ -1,5 +1,5 @@
 /*
- * test for arguments to clone() and join()
+ * test for clone() where the thread function returns, requires manual inspection
  * Authors:
  * - Varun Naik, Spring 2018
  */
@@ -21,47 +21,32 @@ volatile int global = 0;
 void
 func(void *arg1, void *arg2)
 {
-  volatile int retval;
-  printf(1, "Inside func\n");
-
-  printf(1, "func arg1: %p\n", arg1);
-  printf(1, "func arg2: %p\n", arg2);
-  printf(1, "func arg1 val: %d\n", *(int*)arg1);
-  printf(1, "func arg2 val: %d\n", *(int*)arg2);
-
-  // Assign retval to return value of clone()
-  asm volatile("movl %%eax,%0" : "=r"(retval));
-
-  check(*(int *)arg1 == 0xABCDABCD, "*arg1 is incorrect");
-  check(*(int *)arg2 == 0xCDEFCDEF, "*arg2 is incorrect");
-  check(((uint)&retval & (PGSIZE-1)) == 0xFE4, "Local variable is in wrong location");
-  check(retval == 0, "Return value of clone() in child is incorrect");
-
-  printf(1, "childpid: %d\n", getpid());
-
   // Change external state
-  *(int *)arg1 = 0x12341234;
   cpid = getpid();
   check(cpid > ppid, "getpid() returned the wrong pid");
   ++global;
 
-  exit();
+  printf(1, "PID %d should trap to 0xffffffff...\n", getpid());
 
-  check(0, "Continued after exit");
+  // Even if we set the stack pointer to 0, it shouldn't affect the stack in
+  // join()
+  asm volatile("mov 0,%esp");
+
+  // Return, rather than exit
+  return;
+}
+
+void
+crash(void)
+{
+  check(0, "Should not reach here");
 }
 
 int
 main(int argc, char *argv[])
 {
   void *stack1, *stack2;
-  int arg1 = 0xABCDABCD;
-  int arg2 = 0xCDEFCDEF;
-  int pid1, pid2, status;
-  
-  printf(1, "arg1 p: %p\n", &arg1);
-  printf(1, "arg2 p: %p\n", &arg2);
-  printf(1, "arg1: %d\n", arg1);
-  printf(1, "arg2: %d\n", arg2);
+  int pid1, pid2, status, i;
 
   ppid = getpid();
   check(ppid > 2, "getpid() failed");
@@ -71,20 +56,23 @@ main(int argc, char *argv[])
   check(stack1 != (char *)-1, "sbrk() failed");
   check((uint)stack1 % PGSIZE == 0, "sbrk() return value is not page aligned");
 
-  pid1 = clone(&func, &arg1, &arg2, stack1);
+  // Fill the thread stack with pointers to crash()
+  for (i = 0; i < PGSIZE / sizeof(void *); ++i) {
+    ((void (**)(void))stack1)[i] = &crash;
+  }
+
+  pid1 = clone(&func, NULL, NULL, stack1);
   check(pid1 > ppid, "clone() failed");
-
-
 
   pid2 = join(&stack2);
   status = kill(pid1);
   check(status == -1, "Child was still alive after join()");
   check(pid1 == pid2, "join() returned the wrong pid");
   check(stack1 == stack2, "join() returned the wrong stack");
-  check(arg1 == 0xABCDABCD, "arg1 is incorrect");
-  check(arg2 == 0xCDEFCDEF, "arg2 is incorrect");
   check(cpid == pid1, "cpid is incorrect");
   check(global == 1, "global is incorrect");
+  printf(1, "PID %d joined. Check manually if the trap succeeded.\n", cpid);
+  sleep(300);
 
   printf(1, "PASSED TEST!\n");
   exit();

@@ -39,10 +39,10 @@ main(int argc, char *argv[])
     printf(1, "Parent: count before creating threads: %d\n", temp);
     printf(1, "Parent: Creating threads...\n");
     int pid;
-    for (int i = 0; i < 5; i++) {
+    //for (int i = 0; i < 5; i++) {
         pid = thread_create((void*)func, (void*)b, (void*)c);
 	printf(1, "Parent: pid of child process: %d\n", pid);
-    }
+    //}
 
     printf(1, "Parent: Joining threads...\n");
     thread_join();

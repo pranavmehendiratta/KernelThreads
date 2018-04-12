@@ -27,22 +27,30 @@ sys_clone(void)
 	cprintf("Unable to get the pointer\n");
 	return -1;
     }
-    cprintf("ptr of arg1: %p\n", arg1);
-    cprintf("value of arg1: %d\n", *(int*)arg1);
+    //cprintf("ptr of arg1: %p\n", arg1);
+    //cprintf("value of arg1: %d\n", *(int*)arg1);
     
     // Getting the third parameter
     if (argptr(2, (void*)&arg2, sizeof(arg2)) < 0) {
 	cprintf("Unable to get the pointer\n");
 	return -1;
     }
-    cprintf("ptr of arg2: %p\n", arg2);
-    cprintf("value of arg2: %p\n", *(int*)arg2);
+    //cprintf("ptr of arg2: %p\n", arg2);
+    //cprintf("value of arg2: %p\n", *(int*)arg2);
     
     // Getting the fourth parameter
     if (argptr(3, (void*)&stack, sizeof(stack)) < 0) {
 	cprintf("Unable to get the pointer\n");
 	return -1;
     }
+
+    // Checking if the stack is page aligned and stack has PGSIZE mem access
+    if((uint)stack % PGSIZE != 0 || proc-> sz - (uint)stack < PGSIZE) {
+	cprintf("Not stack aligned\n");
+	return -1;
+    }
+
+
 
     //cprintf("value of stack: %s\n", stack);
     //cprintf("Calling clone from sys_clone\n");

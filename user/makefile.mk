@@ -18,6 +18,11 @@ USER_PROGS := \
 	wc\
 	tclone\
 	clone\
+	clone_bad\
+	threads_zombies\
+	threads_sbrk\
+	threads_many\
+	clone_return\
 	zombie
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))

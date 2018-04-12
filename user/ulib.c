@@ -4,6 +4,14 @@
 #include "user.h"
 #include "x86.h"
 
+struct PS {
+    void* ptr;
+    void* stack;
+};
+
+struct PS structPtrs[100];
+int count = 0;
+
 static inline int fetch_and_add(int *var, int val) {
     //printf(1, "Inside fetch_and_add\n");
     //printf(1, "var=%d\n", *var);    
@@ -49,17 +57,23 @@ int thread_create(void* start_routine, void* arg1, void* arg2) {
     void* stack;
     
     // Page aligning the stack
-    if((int)ptrToFree % PGSIZE == 0) {
+    if((uint)ptrToFree % PGSIZE == 0) {
 	stack = ptrToFree;
     } else {
-	int offset = PGSIZE - ((int)ptrToFree % PGSIZE);
+	int offset = PGSIZE - ((uint)ptrToFree % PGSIZE);
 	stack = ptrToFree + offset;
     }
     
-    //structPtrs[count].ptrToFree = ptrToFree;
-    //structPtrs[count].stack = stack;
-    //count++;
+    structPtrs[count].ptr = ptrToFree;
+    structPtrs[count].stack = stack;
+    //printf(1, "ptrToFree: %p\n", ptrToFree);
+    //printf(1, "ptrToFree: %p\n", structPtrs[count].ptr);
+    //printf(1, "stack: %p\n", stack);
     
+    count++;
+    
+    printf(1, "count: %d\n", count);
+
     //printf(1, "ptrToFree: %p\n", ptrToFree);
     //printf(1, "stack: %p\n", stack);
     
@@ -92,6 +106,22 @@ int thread_join() {
 	//free(structPtrs[i].ptrToFree);
     //}
     //printf(1, "child: thread join done\n");
+   
+    //printf(1, "Pointer in stack: %p\n", stack);
+
+    //printf(1, "--- Free the pointer ----\n");
+    for (int i = 0; i < count; i++) {
+	//printf(1, "ptr in thread_join: %p\n", structPtrs[count].ptr);
+	//printf(1, "stack in thread_join: %p\n", structPtrs[count].stack);
+	if (structPtrs[i].stack != NULL && structPtrs[i].stack == stack) {
+	    //printf(1, "ptr that is being freed for stack in thread_join: %p\n", structPtrs[i].ptr);
+	    free(structPtrs[i].ptr);
+	    structPtrs[i].stack = NULL;
+	    structPtrs[i].ptr = NULL;
+	}
+    }
+    //free(stack);
+    
     return ret;
 }
 
