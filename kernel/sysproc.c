@@ -15,7 +15,6 @@ sys_clone(void)
     void* stack;
     
     //cprintf("Inside sys_clone in kernel/sysproc.c\n");
-    
     // Getting the first parameter
     if (argptr(0, (void*)&func, sizeof(func)) < 0) {
 	cprintf("Unable to get the pointer\n");
@@ -28,6 +27,7 @@ sys_clone(void)
 	cprintf("Unable to get the pointer\n");
 	return -1;
     }
+    cprintf("ptr of arg1: %p\n", arg1);
     cprintf("value of arg1: %d\n", *(int*)arg1);
     
     // Getting the third parameter
@@ -35,7 +35,8 @@ sys_clone(void)
 	cprintf("Unable to get the pointer\n");
 	return -1;
     }
-    cprintf("value of arg2: %d\n", *(int*)arg2);
+    cprintf("ptr of arg2: %p\n", arg2);
+    cprintf("value of arg2: %p\n", *(int*)arg2);
     
     // Getting the fourth parameter
     if (argptr(3, (void*)&stack, sizeof(stack)) < 0) {

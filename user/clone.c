@@ -58,8 +58,8 @@ main(int argc, char *argv[])
   
   printf(1, "arg1 p: %p\n", &arg1);
   printf(1, "arg2 p: %p\n", &arg2);
-  printf(1, "arg1: %d\n", (uint)arg1);
-  printf(1, "arg2: %d\n", (uint)arg2);
+  printf(1, "arg1: %d\n", arg1);
+  printf(1, "arg2: %d\n", arg2);
 
   ppid = getpid();
   check(ppid > 2, "getpid() failed");

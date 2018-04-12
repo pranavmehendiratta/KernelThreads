@@ -82,21 +82,27 @@ int
 clone(void* func, void* arg1, void* arg2, void* stack) {
     cprintf("Inside clone in proc.c\n");
    
+    cprintf("ptr of arg1: %p\n", arg1);
+    cprintf("ptr of arg2: %p\n", arg2);
     cprintf("value of arg1: %d\n", *(int*)arg1);
     cprintf("value of arg2: %d\n", *(int*)arg2);
     int t = 0xffffffff;
 
     // Setting up the stack
     void* temp = stack + PGSIZE - 4;
-    copyout(proc->pgdir, (uint)temp, arg2, 4);
-    
-    cprintf("temp: %d\n", *(int*)temp);
-    
-    
+    //copyout(proc->pgdir, (uint)temp, arg2, 4);
+    temp = arg2;
+    cprintf("temp arg2 ptr: %p\n", temp);
+    cprintf("temp arg2 value: %d\n", *(int*)temp);
     temp = stack + PGSIZE - 8;
-    copyout(proc->pgdir, (uint)temp, arg1, 4);
+    temp = arg1;
+    cprintf("temp arg1 ptr: %p\n", temp);
+    cprintf("temp arg1 value: %d\n", *(int*)temp);
+    //copyout(proc->pgdir, (uint)temp, arg1, 4);
     temp = stack + PGSIZE - 12;
-    copyout(proc->pgdir, (uint)temp, (void*)&t, 4);
+    //copyout(proc->pgdir, (uint)temp, (void*)&t, 4);
+    *(int*)temp = t;
+    cprintf("temp stack ptr: %p\n", temp);
 
     //cprintf("temp: %p, %c\n", temp, *(char*)temp);
     //cprintf("func: %p, %c\n", func, *(char*)func);
@@ -122,10 +128,10 @@ clone(void* func, void* arg1, void* arg2, void* stack) {
     //cprintf("old proc eip: %p, esp: %p\n", proc->tf->eip, proc->tf->esp);
     
     // set the stack pointer to the return address
-    np->tf->esp = (int)temp;
+    np->tf->esp = (uint)temp;
 
     // set the eip to the function to execute
-    np->tf->eip = (int)func;
+    np->tf->eip = (uint)func;
     
     // Save stack in proc
     np->stack = stack;
