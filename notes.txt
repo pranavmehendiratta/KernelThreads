@@ -1,0 +1,10 @@
+Clone -
+    For clone make something similar to fork - this will create the kernel stack
+
+    For user stack use malloc to allocate the memory
+
+    Clone will setup the user stack
+
+    Allocate the memory in user space for user stack
+
+    
