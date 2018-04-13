@@ -11,6 +11,8 @@ struct PS {
 
 struct PS structPtrs[100];
 int count = 0;
+//int start = 0;
+//int end = 0;
 
 static inline int fetch_and_add(int *var, int val) {
     //printf(1, "Inside fetch_and_add\n");
@@ -69,10 +71,17 @@ int thread_create(void* start_routine, void* arg1, void* arg2) {
     //printf(1, "ptrToFree: %p\n", ptrToFree);
     //printf(1, "ptrToFree: %p\n", structPtrs[count].ptr);
     //printf(1, "stack: %p\n", stack);
-    
     count++;
-    
-    printf(1, "count: %d\n", count);
+
+    printf(1, "Join count: %d\n", count);
+
+    //if (end == 99) 
+    //    end = 0;
+    //} else {
+    //    end++;
+    //}
+    //
+    //printf(1, "end: %d\n", end);
 
     //printf(1, "ptrToFree: %p\n", ptrToFree);
     //printf(1, "stack: %p\n", stack);
@@ -120,6 +129,15 @@ int thread_join() {
 	    structPtrs[i].ptr = NULL;
 	}
     }
+
+    //for (int i = start; i < end; i++) {
+    //    if (structPtrs[start].ptr == NULL) {
+    //        if (start)
+    //        start++;
+    //    } else {
+    //        break;
+    //    }
+    //}
     //free(stack);
     
     return ret;

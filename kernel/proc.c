@@ -11,6 +11,8 @@ struct {
     struct proc proc[NPROC];
 } ptable;
 
+struct spinlock memlock;
+
 static struct proc *initproc;
 
 int nextpid = 1;
@@ -23,6 +25,8 @@ static void wakeup1(void *chan);
 pinit(void)
 {
     initlock(&ptable.lock, "ptable");
+    //memlock = kalloc();   
+    initlock(&memlock, "memlock");
 }
 
 // Look in the process table for an UNUSED proc.
@@ -70,6 +74,8 @@ found:
 
     p->tc = kalloc();
     *(int*)(p->tc) = 1;
+    
+    // Initialize spinlock
 
     return p;
 }
@@ -83,32 +89,34 @@ found:
 
 int 
 clone(void* func, void* arg1, void* arg2, void* stack) {
-    cprintf("Inside clone in proc.c\n");
+    //cprintf("Inside clone in proc.c\n");
 
     //cprintf("ptr of arg1: %p\n", arg1);
     //cprintf("ptr of arg2: %p\n", arg2);
     //cprintf("value of arg1: %d\n", *(int*)arg1);
     //cprintf("value of arg2: %d\n", *(int*)arg2);
-    int t = 0xffffffff;
+    //int t = 0xffffffff;
 
-    // Setting up the stack
-    void* temp = stack + PGSIZE - 4;
-    //copyout(proc->pgdir, (uint)temp, arg2, 4);
-    *(int*)temp = (uint)arg2;
-    //cprintf("temp arg2 ptr: %p\n", temp);
-    //cprintf("temp arg2 value: %d\n", *(int*)temp);
-    temp = stack + PGSIZE - 8;
-    *(int*)temp = (uint)arg1;
-    //cprintf("temp arg1 ptr: %p\n", temp);
-    //cprintf("temp arg1 value: %d\n", *(int*)temp);
-    //copyout(proc->pgdir, (uint)temp, arg1, 4);
-    temp = stack + PGSIZE - 12;
-    //copyout(proc->pgdir, (uint)temp, (void*)&t, 4);
-    *(int*)temp = t;
-    //cprintf("temp stack ptr: %p\n", temp);
 
-    //cprintf("temp: %p, %c\n", temp, *(char*)temp);
-    //cprintf("func: %p, %c\n", func, *(char*)func);
+
+    //// Setting up the stack
+    //void* temp = stack + PGSIZE - 4;
+    ////copyout(proc->pgdir, (uint)temp, arg2, 4);
+    //*(int*)temp = (uint)arg2;
+    ////cprintf("temp arg2 ptr: %p\n", temp);
+    ////cprintf("temp arg2 value: %d\n", *(int*)temp);
+    //temp = stack + PGSIZE - 8;
+    //*(int*)temp = (uint)arg1;
+    ////cprintf("temp arg1 ptr: %p\n", temp);
+    ////cprintf("temp arg1 value: %d\n", *(int*)temp);
+    ////copyout(proc->pgdir, (uint)temp, arg1, 4);
+    //temp = stack + PGSIZE - 12;
+    ////copyout(proc->pgdir, (uint)temp, (void*)&t, 4);
+    //*(int*)temp = t;
+    ////cprintf("temp stack ptr: %p\n", temp);
+
+    ////cprintf("temp: %p, %c\n", temp, *(char*)temp);
+    ////cprintf("func: %p, %c\n", func, *(char*)func);
 
     int i, pid;
     struct proc *np;
@@ -119,6 +127,16 @@ clone(void* func, void* arg1, void* arg2, void* stack) {
     }
     // page directoy of this thread is same as old process
     np->pgdir = proc->pgdir;
+
+    uint ustack[3];
+    uint sp = (uint)stack + PGSIZE;
+    ustack[0] = 0xffffffff;
+    ustack[1] = (uint)arg1;
+    ustack[2] = (uint)arg2;
+    sp -= 12;
+    if (copyout(np->pgdir, sp, ustack, 12) < 0) {
+	return -1;
+    }
 
     // set the trap frame for new process
     np->sz = proc->sz;
@@ -131,7 +149,7 @@ clone(void* func, void* arg1, void* arg2, void* stack) {
     //cprintf("old proc eip: %p, esp: %p\n", proc->tf->eip, proc->tf->esp);
 
     // set the stack pointer to the return address
-    np->tf->esp = (uint)temp;
+    np->tf->esp = (uint)sp;
 
     // set the eip to the function to execute
     np->tf->eip = (uint)func;
@@ -155,7 +173,7 @@ clone(void* func, void* arg1, void* arg2, void* stack) {
     np->tc = proc->tc;
     int tc = *(int*)(np->tc);
     *(int*)(np->tc) = tc + 1;
-    cprintf("Clone: np->tc after inc: %d\n", *(int*)(np->tc));
+    //cprintf("Clone: np->tc after inc: %d\n", *(int*)(np->tc));
 
     //cprintf("child pid: %d\n", pid);
     //cprintf("parent pid: %d\n", proc->pid);
@@ -194,8 +212,8 @@ join(void **stack) {
 	    if(p->state == ZOMBIE){
 		int tc = *(int*)(p->tc);
 		*(int*)(p->tc) = tc - 1;
-		cprintf("Join: np->tc after dec: %d\n", *(int*)(p->tc));
-		cprintf("Join: tc after dec: %d\n", tc);
+		//cprintf("Join: np->tc after dec: %d\n", *(int*)(p->tc));
+		//cprintf("Join: tc after dec: %d\n", tc);
 		p->tc = NULL;
 
 		*stack = p->stack;
@@ -221,10 +239,10 @@ join(void **stack) {
 	    return -1;
 	}
 
-	cprintf("sleeping...\n");
+	//cprintf("sleeping...\n");
 	// Wait for children to exit.  (See wakeup1 call in proc_exit.)
 	sleep(proc, &ptable.lock);  //DOC: wait-sleep
-	cprintf("Done sleeping...\n");
+	//cprintf("Done sleeping...\n");
     }
     return 0;
 }
@@ -267,6 +285,9 @@ growproc(int n)
 {
     uint sz;
 
+    //cprintf("child: %d\n", proc->sz);
+    //cprintf("parent: %d\n", proc->parent->sz);
+
     sz = proc->sz;
     if(n > 0){
 	if((sz = allocuvm(proc->pgdir, sz, sz + n)) == 0)
@@ -276,6 +297,17 @@ growproc(int n)
 	    return -1;
     }
     proc->sz = sz;
+    //proc->parent->sz = sz; 
+    //cprintf("after child: %d\n", proc->sz);
+    //cprintf("after parent: %d\n", proc->parent->sz);
+    
+    struct proc *p;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++) {
+	if (proc != p && p->pgdir == proc->pgdir) {
+	    p->sz = sz;
+	}
+    }
+
     switchuvm(proc);
     return 0;
 }

@@ -23,6 +23,7 @@ USER_PROGS := \
 	threads_sbrk\
 	threads_many\
 	clone_return\
+	lock_basic\
 	zombie
 
 USER_PROGS := $(addprefix user/, $(USER_PROGS))

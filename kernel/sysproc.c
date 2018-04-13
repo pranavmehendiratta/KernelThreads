@@ -5,6 +5,9 @@
 #include "mmu.h"
 #include "proc.h"
 #include "sysfunc.h"
+#include "spinlock.h"
+
+//int init = 0;
 
 int
 sys_clone(void)
@@ -45,7 +48,7 @@ sys_clone(void)
     }
 
     // Checking if the stack is page aligned and stack has PGSIZE mem access
-    if((uint)stack % PGSIZE != 0 || proc-> sz - (uint)stack < PGSIZE) {
+    if((uint)stack % PGSIZE != 0 || proc->sz - (uint)stack < PGSIZE) {
 	cprintf("Not stack aligned\n");
 	return -1;
     }
@@ -120,11 +123,20 @@ sys_sbrk(void)
   int addr;
   int n;
 
+  //if (init == 0) {
+  //  initlock(&memlock, "memlock");
+  //}
+
   if(argint(0, &n) < 0)
     return -1;
+  
+  acquire(&memlock);
   addr = proc->sz;
-  if(growproc(n) < 0)
+  if(growproc(n) < 0) {
+    release(&memlock);
     return -1;
+  }
+  release(&memlock);
   return addr;
 }
 
