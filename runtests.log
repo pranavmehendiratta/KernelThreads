@@ -8,25 +8,7 @@ build xv6 using make
 **********************************************************************
 Trying to build project using make
 make
-gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 \
-	-M -MG kernel/proc.c -MF kernel/proc.d -MT kernel/proc.d -MT kernel/proc.o
-gcc  -I include -nostdinc -Wall -Werror -ggdb -fno-pic -fno-builtin -fno-strict-aliasing -fno-stack-protector -m32 -c -o kernel/proc.o kernel/proc.c
-ld  -m    elf_i386 -nostdlib --omagic \
-	--section-start=.text=0x100000 --entry=main --output=kernel/kernel \
-	kernel/multiboot.o kernel/data.o kernel/bio.o kernel/console.o kernel/exec.o kernel/file.o kernel/fs.o kernel/ide.o kernel/ioapic.o kernel/kalloc.o kernel/kbd.o kernel/lapic.o kernel/main.o kernel/mp.o kernel/picirq.o kernel/pipe.o kernel/proc.o kernel/spinlock.o kernel/string.o kernel/swtch.o kernel/syscall.o kernel/sysfile.o kernel/sysproc.o kernel/timer.o kernel/trapasm.o kernel/trap.o kernel/uart.o kernel/vectors.o kernel/vm.o \
-	-b binary initcode bootother
-dd if=/dev/zero of=xv6.img count=10000
-10000+0 records in
-10000+0 records out
-5120000 bytes (5.1 MB, 4.9 MiB) copied, 0.0147214 s, 348 MB/s
-dd if=kernel/bootblock of=xv6.img conv=notrunc
-1+0 records in
-1+0 records out
-512 bytes copied, 6.1715e-05 s, 8.3 MB/s
-dd if=kernel/kernel of=xv6.img seek=1 conv=notrunc
-249+1 records in
-249+1 records out
-127508 bytes (128 kB, 125 KiB) copied, 0.000374352 s, 341 MB/s
+make: Nothing to be done for 'all'.
 
 
 test build PASSED
@@ -91,9 +73,14 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
 Inside clone in proc.c
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 PASSED TEST!
 
 
@@ -159,13 +146,17 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 PASSED TEST!
-
 
 test clone_child_sleep PASSED (10 of 10)
  (basic test for clone() and join())
@@ -229,13 +220,17 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 PASSED TEST!
-
 
 test clone_arguments PASSED (10 of 10)
  (test for arguments to clone() and join())
@@ -299,16 +294,21 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
 Unable to get the pointer
 Unable to get the pointer
 Not stack aligned
 Not stack aligned
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 Unable to get the pointer
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 PASSED TEST!
 
 
@@ -374,13 +374,18 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 PID 4 should trap to 0xffffffff...
 pid 4 tester: trap 14 err 5 on cpu 1 eip 0xffffffff addr 0xffffffff--kill proc
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 PID 4 joined. Check manually if the trap succeeded.
 PASSED TEST!
 
@@ -447,15 +452,19 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
 Inside thread_create function
 count: 1
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 PASSED TEST!
-
 
 test threads_basic PASSED (10 of 10)
  (basic tests for thread_create() and thread_join())
@@ -519,192 +528,255 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
 Creating child threads...
 Inside thread_create function
 count: 1
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 Inside thread_create function
 count: 2
 Inside clone in proc.c
+Clone: np->tc after inc: 3
 Inside thread_create function
 count: 3
 Inside clone in proc.c
+Clone: np->tc after inc: 4
 Inside thread_create function
 count: 4
 Inside clone in proc.c
+Clone: np->tc after inc: 5
 Inside thread_create function
 count: 5
 Inside clone in proc.c
+Clone: np->tc after inc: 6
 Inside thread_create function
 count: 6
 Inside clone in proc.c
+Clone: np->tc after inc: 7
 Inside thread_create function
 count: 7
 Inside clone in proc.c
+Clone: np->tc after inc: 8
 Inside thread_create function
 count: 8
 Inside clone in proc.c
+Clone: np->tc after inc: 9
 Inside thread_create function
 count: 9
 Inside clone in proc.c
+Clone: np->tc after inc: 10
 Inside thread_create function
 count: 10
 Inside clone in proc.c
+Clone: np->tc after inc: 11
 Inside thread_create function
 count: 11
 Inside clone in proc.c
+Clone: np->tc after inc: 12
 Inside thread_create function
 count: 12
 Inside clone in proc.c
+Clone: np->tc after inc: 13
 Inside thread_create function
 count: 13
 Inside clone in proc.c
+Clone: np->tc after inc: 14
 Inside thread_create function
 count: 14
 Inside clone in proc.c
+Clone: np->tc after inc: 15
 Inside thread_create function
 count: 15
 Inside clone in proc.c
+Clone: np->tc after inc: 16
 Inside thread_create function
 count: 16
 Inside clone in proc.c
+Clone: np->tc after inc: 17
 Inside thread_create function
 count: 17
 Inside clone in proc.c
+Clone: np->tc after inc: 18
 Inside thread_create function
 count: 18
 Inside clone in proc.c
+Clone: np->tc after inc: 19
 Inside thread_create function
 count: 19
 Inside clone in proc.c
+Clone: np->tc after inc: 20
 Inside thread_create function
 count: 20
 Inside clone in proc.c
+Clone: np->tc after inc: 21
 Inside thread_create function
 count: 21
 Inside clone in proc.c
+Clone: np->tc after inc: 22
 Inside thread_create function
 count: 22
 Inside clone in proc.c
+Clone: np->tc after inc: 23
 Inside thread_create function
 count: 23
 Inside clone in proc.c
+Clone: np->tc after inc: 24
 Inside thread_create function
 count: 24
 Inside clone in proc.c
+Clone: np->tc after inc: 25
 Inside thread_create function
 count: 25
 Inside clone in proc.c
+Clone: np->tc after inc: 26
 Inside thread_create function
 count: 26
 Inside clone in proc.c
+Clone: np->tc after inc: 27
 Inside thread_create function
 count: 27
 Inside clone in proc.c
+Clone: np->tc after inc: 28
 Inside thread_create function
 count: 28
 Inside clone in proc.c
+Clone: np->tc after inc: 29
 Inside thread_create function
 count: 29
 Inside clone in proc.c
+Clone: np->tc after inc: 30
 Inside thread_create function
 count: 30
 Inside clone in proc.c
+Clone: np->tc after inc: 31
 Inside thread_create function
 count: 31
 Inside clone in proc.c
+Clone: np->tc after inc: 32
 Inside thread_create function
 count: 32
 Inside clone in proc.c
+Clone: np->tc after inc: 33
 Inside thread_create function
 count: 33
 Inside clone in proc.c
+Clone: np->tc after inc: 34
 Inside thread_create function
 count: 34
 Inside clone in proc.c
+Clone: np->tc after inc: 35
 Inside thread_create function
 count: 35
 Inside clone in proc.c
+Clone: np->tc after inc: 36
 Inside thread_create function
 count: 36
 Inside clone in proc.c
+Clone: np->tc after inc: 37
 Inside thread_create function
 count: 37
 Inside clone in proc.c
+Clone: np->tc after inc: 38
 Inside thread_create function
 count: 38
 Inside clone in proc.c
+Clone: np->tc after inc: 39
 Inside thread_create function
 count: 39
 Inside clone in proc.c
+Clone: np->tc after inc: 40
 Inside thread_create function
 count: 40
 Inside clone in proc.c
+Clone: np->tc after inc: 41
 Inside thread_create function
 count: 41
 Inside clone in proc.c
+Clone: np->tc after inc: 42
 Inside thread_create function
 count: 42
 Inside clone in proc.c
+Clone: np->tc after inc: 43
 Inside thread_create function
 count: 43
 Inside clone in proc.c
+Clone: np->tc after inc: 44
 Inside thread_create function
 count: 44
 Inside clone in proc.c
+Clone: np->tc after inc: 45
 Inside thread_create function
 count: 45
 Inside clone in proc.c
+Clone: np->tc after inc: 46
 Inside thread_create function
 count: 46
 Inside clone in proc.c
+Clone: np->tc after inc: 47
 Inside thread_create function
 count: 47
 Inside clone in proc.c
+Clone: np->tc after inc: 48
 Inside thread_create function
 count: 48
 Inside clone in proc.c
+Clone: np->tc after inc: 49
 Inside thread_create function
 count: 49
 Inside clone in proc.c
+Clone: np->tc after inc: 50
 Inside thread_create function
 count: 50
 Inside clone in proc.c
+Clone: np->tc after inc: 51
 Inside thread_create function
 count: 51
 Inside clone in proc.c
+Clone: np->tc after inc: 52
 Inside thread_create function
 count: 52
 Inside clone in proc.c
+Clone: np->tc after inc: 53
 Inside thread_create function
 count: 53
 Inside clone in proc.c
+Clone: np->tc after inc: 54
 Inside thread_create function
 count: 54
 Inside clone in proc.c
+Clone: np->tc after inc: 55
 Inside thread_create function
 count: 55
 Inside clone in proc.c
+Clone: np->tc after inc: 56
 Inside thread_create function
 count: 56
 Inside clone in proc.c
+Clone: np->tc after inc: 57
 Inside thread_create function
 count: 57
 Inside clone in proc.c
+Clone: np->tc after inc: 58
 Inside thread_create function
 count: 58
 Inside clone in proc.c
+Clone: np->tc after inc: 59
 Inside thread_create function
 count: 59
 Inside clone in proc.c
+Clone: np->tc after inc: 60
 Inside thread_create function
 count: 60
 Inside clone in proc.c
+Clone: np->tc after inc: 61
 Inside thread_create function
 count: 61
 Inside clone in proc.c
+Clone: np->tc after inc: 62
 Inside thread_create function
 count: 62
 Inside clone in proc.c
@@ -712,229 +784,424 @@ Created 61 child threads
 Joining all 61 child threads...
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 61
+Join: tc after dec: 62
+Join: np->tc after dec: 60
+Join: tc after dec: 61
+Join: np->tc after dec: 59
+Join: tc after dec: 60
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 58
+Join: tc after dec: 59
+Join: np->tc after dec: 57
+Join: tc after dec: 58
+Join: np->tc after dec: 56
+Join: tc after dec: 57
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 55
+Join: tc after dec: 56
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 54
+Join: tc after dec: 55
+Join: np->tc after dec: 53
+Join: tc after dec: 54
+Join: np->tc after dec: 52
+Join: tc after dec: 53
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 51
+Join: tc after dec: 52
+Join: np->tc after dec: 50
+Join: tc after dec: 51
+Join: np->tc after dec: 49
+Join: tc after dec: 50
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 48
+Join: tc after dec: 49
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 47
+Join: tc after dec: 48
+Join: np->tc after dec: 46
+Join: tc after dec: 47
+Join: np->tc after dec: 45
+Join: tc after dec: 46
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 44
+Join: tc after dec: 45
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 43
+Join: tc after dec: 44
+Join: np->tc after dec: 42
+Join: tc after dec: 43
+Join: np->tc after dec: 41
+Join: tc after dec: 42
+Join: np->tc after dec: 40
+Join: tc after dec: 41
+Join: np->tc after dec: 39
+Join: tc after dec: 40
+Join: np->tc after dec: 38
+Join: tc after dec: 39
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 37
+Join: tc after dec: 38
+Join: np->tc after dec: 36
+Join: tc after dec: 37
+Join: np->tc after dec: 35
+Join: tc after dec: 36
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 34
+Join: tc after dec: 35
+Join: np->tc after dec: 33
+Join: tc after dec: 34
+Join: np->tc after dec: 32
+Join: tc after dec: 33
+Join: np->tc after dec: 31
+Join: tc after dec: 32
+Join: np->tc after dec: 30
+Join: tc after dec: 31
+Join: np->tc after dec: 29
+Join: tc after dec: 30
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 28
+Join: tc after dec: 29
+Join: np->tc after dec: 27
+Join: tc after dec: 28
+Join: np->tc after dec: 26
+Join: tc after dec: 27
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 25
+Join: tc after dec: 26
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 24
+Join: tc after dec: 25
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 23
+Join: tc after dec: 24
+Join: np->tc after dec: 22
+Join: tc after dec: 23
+Join: np->tc after dec: 21
+Join: tc after dec: 22
 sleeping...
 Done sleeping...
-pid 62 tester: trap 14 err 4 on cpu 1 eip 0xf9b addr 0x1000000--kill proc
+Join: np->tc after dec: 20
+Join: tc after dec: 21
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 19
+Join: tc after dec: 20
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 18
+Join: tc after dec: 19
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 17
+Join: tc after dec: 18
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 16
+Join: tc after dec: 17
+Join: np->tc after dec: 15
+Join: tc after dec: 16
+Join: np->tc after dec: 14
+Join: tc after dec: 15
+Join: np->tc after dec: 13
+Join: tc after dec: 14
+Join: np->tc after dec: 12
+Join: tc after dec: 13
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 11
+Join: tc after dec: 12
+Join: np->tc after dec: 10
+Join: tc after dec: 11
+Join: np->tc after dec: 9
+Join: tc after dec: 10
+sleeping...
+pid 62 tester: trap 14 err 4 on cpu 0 eip 0xf9b addr 0x1000000--kill proc
+Done sleeping...
+Join: np->tc after dec: 8
+Join: tc after dec: 9
+Join: np->tc after dec: 7
+Join: tc after dec: 8
+Join: np->tc after dec: 6
+Join: tc after dec: 7
+Join: np->tc after dec: 5
+Join: tc after dec: 6
 sleeping...
 pid 61 tester: trap 14 err 5 on cpu 0 eip 0x2d addr 0xffffff83--kill proc
 Done sleeping...
+Join: np->tc after dec: 4
+Join: tc after dec: 5
+Join: np->tc after dec: 3
+Join: tc after dec: 4
 sleeping...
 pid 63 tester: trap 14 err 5 on cpu 0 eip 0x2d addr 0xffffff83--kill proc
 pid 64 tester: trap 14 err 5 on cpu 0 eip 0x2d addr 0xffffff83--kill proc
 Done sleeping...
+Join: np->tc after dec: 2
+Join: tc after dec: 3
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 All 61 child threads joined
 Creating child threads...
 Inside thread_create function
 count: 63
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 Inside thread_create function
 count: 64
 Inside clone in proc.c
+Clone: np->tc after inc: 3
 Inside thread_create function
 count: 65
 Inside clone in proc.c
+Clone: np->tc after inc: 4
 Inside thread_create function
 count: 66
 Inside clone in proc.c
+Clone: np->tc after inc: 5
 Inside thread_create function
 count: 67
 Inside clone in proc.c
+Clone: np->tc after inc: 6
 Inside thread_create function
 count: 68
 Inside clone in proc.c
+Clone: np->tc after inc: 7
 Inside thread_create function
 count: 69
 Inside clone in proc.c
+Clone: np->tc after inc: 8
 Inside thread_create function
 count: 70
 Inside clone in proc.c
+Clone: np->tc after inc: 9
 Inside thread_create function
 count: 71
 Inside clone in proc.c
+Clone: np->tc after inc: 10
 Inside thread_create function
 count: 72
 Inside clone in proc.c
+Clone: np->tc after inc: 11
 Inside thread_create function
 count: 73
 Inside clone in proc.c
+Clone: np->tc after inc: 12
 Inside thread_create function
 count: 74
 Inside clone in proc.c
+Clone: np->tc after inc: 13
 Inside thread_create function
 count: 75
 Inside clone in proc.c
+Clone: np->tc after inc: 14
 Inside thread_create function
 count: 76
 Inside clone in proc.c
+Clone: np->tc after inc: 15
 Inside thread_create function
 count: 77
 Inside clone in proc.c
+Clone: np->tc after inc: 16
 Inside thread_create function
 count: 78
 Inside clone in proc.c
+Clone: np->tc after inc: 17
 Inside thread_create function
 count: 79
 Inside clone in proc.c
+Clone: np->tc after inc: 18
 Inside thread_create function
 count: 80
 Inside clone in proc.c
+Clone: np->tc after inc: 19
 Inside thread_create function
 count: 81
 Inside clone in proc.c
+Clone: np->tc after inc: 20
 Inside thread_create function
 count: 82
 Inside clone in proc.c
+Clone: np->tc after inc: 21
 Inside thread_create function
 count: 83
 Inside clone in proc.c
+Clone: np->tc after inc: 22
 Inside thread_create function
 count: 84
 Inside clone in proc.c
+Clone: np->tc after inc: 23
 Inside thread_create function
 count: 85
 Inside clone in proc.c
+Clone: np->tc after inc: 24
 Inside thread_create function
 count: 86
 Inside clone in proc.c
+Clone: np->tc after inc: 25
 Inside thread_create function
 count: 87
 Inside clone in proc.c
+Clone: np->tc after inc: 26
 Inside thread_create function
 count: 88
 Inside clone in proc.c
+Clone: np->tc after inc: 27
 Inside thread_create function
 count: 89
 Inside clone in proc.c
+Clone: np->tc after inc: 28
 Inside thread_create function
 count: 90
 Inside clone in proc.c
+Clone: np->tc after inc: 29
 Inside thread_create function
 count: 91
 Inside clone in proc.c
+Clone: np->tc after inc: 30
 Inside thread_create function
 count: 92
 Inside clone in proc.c
+Clone: np->tc after inc: 31
 Inside thread_create function
 count: 93
 Inside clone in proc.c
+Clone: np->tc after inc: 32
 Inside thread_create function
 count: 94
 Inside clone in proc.c
+Clone: np->tc after inc: 33
 Inside thread_create function
 count: 95
 Inside clone in proc.c
+Clone: np->tc after inc: 34
 Inside thread_create function
 count: 96
 Inside clone in proc.c
+Clone: np->tc after inc: 35
 Inside thread_create function
 count: 97
 Inside clone in proc.c
+Clone: np->tc after inc: 36
 Inside thread_create function
 count: 98
 Inside clone in proc.c
+Clone: np->tc after inc: 37
 Inside thread_create function
 count: 99
 Inside clone in proc.c
+Clone: np->tc after inc: 38
 Inside thread_create function
 count: 100
 Inside clone in proc.c
+Clone: np->tc after inc: 39
 Inside thread_create function
 count: 101
 Inside clone in proc.c
+Clone: np->tc after inc: 40
 Inside thread_create function
 count: 102
 Inside clone in proc.c
+Clone: np->tc after inc: 41
 Inside thread_create function
 count: 103
 Inside clone in proc.c
+Clone: np->tc after inc: 42
 Inside thread_create function
 count: 104
 Inside clone in proc.c
+Clone: np->tc after inc: 43
 Inside thread_create function
 count: 105
 Inside clone in proc.c
+Clone: np->tc after inc: 44
 Inside thread_create function
 count: 106
 Inside clone in proc.c
+Clone: np->tc after inc: 45
 Inside thread_create function
 count: 107
 Inside clone in proc.c
+Clone: np->tc after inc: 46
 Inside thread_create function
 count: 108
 Inside clone in proc.c
+Clone: np->tc after inc: 47
 Inside thread_create function
 count: 109
 Inside clone in proc.c
+Clone: np->tc after inc: 48
 Inside thread_create function
 count: 110
 Inside clone in proc.c
+Clone: np->tc after inc: 49
 Inside thread_create function
 count: 111
 Inside clone in proc.c
+Clone: np->tc after inc: 50
 Inside thread_create function
 count: 112
 Inside clone in proc.c
+Clone: np->tc after inc: 51
 Inside thread_create function
 count: 113
 Inside clone in proc.c
+Clone: np->tc after inc: 52
 Inside thread_create function
 count: 114
 Inside clone in proc.c
+Clone: np->tc after inc: 53
 Inside thread_create function
 count: 115
 Inside clone in proc.c
+Clone: np->tc after inc: 54
 Inside thread_create function
 count: 116
 Inside clone in proc.c
+Clone: np->tc after inc: 55
 Inside thread_create function
 count: 117
 Inside clone in proc.c
+Clone: np->tc after inc: 56
 Inside thread_create function
 count: 118
 Inside clone in proc.c
+Clone: np->tc after inc: 57
 Inside thread_create function
 count: 119
 Inside clone in proc.c
+Clone: np->tc after inc: 58
 Inside thread_create function
 count: 120
 Inside clone in proc.c
+Clone: np->tc after inc: 59
 Inside thread_create function
 count: 121
 Inside clone in proc.c
+Clone: np->tc after inc: 60
 Inside thread_create function
 count: 122
 Inside clone in proc.c
+Clone: np->tc after inc: 61
 Inside thread_create function
 count: 123
 Inside clone in proc.c
+Clone: np->tc after inc: 62
 Inside thread_create function
 count: 124
 Inside clone in proc.c
@@ -942,2477 +1209,3905 @@ Created 61 child threads
 Joining all 61 child threads...
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 61
+Join: tc after dec: 62
+Join: np->tc after dec: 60
+Join: tc after dec: 61
+Join: np->tc after dec: 59
+Join: tc after dec: 60
+Join: np->tc after dec: 58
+Join: tc after dec: 59
+Join: np->tc after dec: 57
+Join: tc after dec: 58
+Join: np->tc after dec: 56
+Join: tc after dec: 57
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 55
+Join: tc after dec: 56
+Join: np->tc after dec: 54
+Join: tc after dec: 55
+Join: np->tc after dec: 53
+Join: tc after dec: 54
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 52
+Join: tc after dec: 53
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 51
+Join: tc after dec: 52
+Join: np->tc after dec: 50
+Join: tc after dec: 51
+Join: np->tc after dec: 49
+Join: tc after dec: 50
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 48
+Join: tc after dec: 49
+Join: np->tc after dec: 47
+Join: tc after dec: 48
+Join: np->tc after dec: 46
+Join: tc after dec: 47
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 45
+Join: tc after dec: 46
+Join: np->tc after dec: 44
+Join: tc after dec: 45
+Join: np->tc after dec: 43
+Join: tc after dec: 44
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 42
+Join: tc after dec: 43
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 41
+Join: tc after dec: 42
+Join: np->tc after dec: 40
+Join: tc after dec: 41
+Join: np->tc after dec: 39
+Join: tc after dec: 40
+Join: np->tc after dec: 38
+Join: tc after dec: 39
+Join: np->tc after dec: 37
+Join: tc after dec: 38
+Join: np->tc after dec: 36
+Join: tc after dec: 37
+Join: np->tc after dec: 35
+Join: tc after dec: 36
+Join: np->tc after dec: 34
+Join: tc after dec: 35
+Join: np->tc after dec: 33
+Join: tc after dec: 34
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 32
+Join: tc after dec: 33
+Join: np->tc after dec: 31
+Join: tc after dec: 32
+Join: np->tc after dec: 30
+Join: tc after dec: 31
+Join: np->tc after dec: 29
+Join: tc after dec: 30
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 28
+Join: tc after dec: 29
+Join: np->tc after dec: 27
+Join: tc after dec: 28
+Join: np->tc after dec: 26
+Join: tc after dec: 27
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 25
+Join: tc after dec: 26
+Join: np->tc after dec: 24
+Join: tc after dec: 25
+Join: np->tc after dec: 23
+Join: tc after dec: 24
+Join: np->tc after dec: 22
+Join: tc after dec: 23
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 21
+Join: tc after dec: 22
+Join: np->tc after dec: 20
+Join: tc after dec: 21
+Join: np->tc after dec: 19
+Join: tc after dec: 20
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 18
+Join: tc after dec: 19
+Join: np->tc after dec: 17
+Join: tc after dec: 18
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 16
+Join: tc after dec: 17
+Join: np->tc after dec: 15
+Join: tc after dec: 16
+Join: np->tc after dec: 14
+Join: tc after dec: 15
+Join: np->tc after dec: 13
+Join: tc after dec: 14
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 12
+Join: tc after dec: 13
+Join: np->tc after dec: 11
+Join: tc after dec: 12
+Join: np->tc after dec: 10
+Join: tc after dec: 11
+Join: np->tc after dec: 9
+Join: tc after dec: 10
+Join: np->tc after dec: 8
+Join: tc after dec: 9
+Join: np->tc after dec: 7
+Join: tc after dec: 8
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 6
+Join: tc after dec: 7
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 5
+Join: tc after dec: 6
+Join: np->tc after dec: 4
+Join: tc after dec: 5
+Join: np->tc after dec: 3
+Join: tc after dec: 4
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 2
+Join: tc after dec: 3
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 All 61 child threads joined
 Creating and joining 10000 child threads...
 Inside thread_create function
 count: 125
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 126
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 127
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 128
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 129
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 130
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 131
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 132
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 133
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 134
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 135
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 136
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 137
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 138
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 139
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 140
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 141
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 142
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 143
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 144
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 145
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 146
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 147
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 148
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 149
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 150
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 151
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 152
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 153
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 154
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 155
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 156
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 157
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 158
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 159
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 160
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 161
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 162
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 163
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 164
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 165
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 166
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 167
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 168
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 169
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 170
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 171
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 172
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 173
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 174
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 175
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 176
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 177
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 178
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 179
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 180
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 181
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 182
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 183
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 184
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 185
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 186
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 187
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 188
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 189
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 190
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 191
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 192
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 193
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 194
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 195
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 196
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 197
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 198
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 199
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 200
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 201
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 202
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 203
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 204
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 205
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 206
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 207
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 208
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 209
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 210
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 211
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 212
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 213
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 214
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 215
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 216
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 217
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 218
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 219
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 220
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 221
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 222
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 223
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 224
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 225
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 226
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 227
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 228
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 229
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 230
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 231
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 232
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 233
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 234
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 235
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 236
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 237
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 238
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 239
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 240
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 241
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 242
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 243
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 244
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 245
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 246
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 247
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 248
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 249
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 250
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 251
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 252
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 253
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 254
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 255
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 256
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 257
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 258
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 259
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 260
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 261
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 262
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 263
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 264
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 265
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 266
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 267
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 268
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 269
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 270
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 271
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 272
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 273
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 274
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 275
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 276
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 277
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 278
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 279
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 280
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 281
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 282
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 283
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 284
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 285
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 286
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 287
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 288
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 289
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 290
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 291
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 292
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 293
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 294
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 295
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 296
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 297
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 298
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 299
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 300
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 301
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 302
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 303
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 304
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 305
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 306
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 307
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 308
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 309
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 310
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 311
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 312
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 313
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 314
 Inside clone in proc.c
+Clone: np->tc after inc: 2
+sleeping...
+Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 315
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 316
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 317
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 318
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 319
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 320
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 321
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 322
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 323
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 324
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 325
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 326
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 327
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 328
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 329
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 330
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 331
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 332
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 333
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 334
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 335
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 336
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 337
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 338
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 339
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 340
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 341
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 342
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 343
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 344
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 345
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 346
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 347
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 348
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 349
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 350
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 351
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 352
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 353
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 354
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 355
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 356
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 357
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 358
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 359
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 360
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 361
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 362
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 363
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 364
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 365
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 366
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 367
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 368
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 369
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 370
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 371
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 372
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 373
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 374
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 375
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 376
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 377
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 378
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 379
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 380
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 381
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 382
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 383
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 384
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 385
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 386
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 387
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 388
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 389
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 390
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 391
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 392
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 393
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 394
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 395
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 396
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 397
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 398
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 399
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 400
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 401
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 402
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 403
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 404
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 405
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 406
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 407
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 408
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 409
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 410
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 411
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 412
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 413
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 414
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 415
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 416
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 417
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 418
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 419
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 420
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 421
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 422
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 423
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 424
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 425
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 426
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 427
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 428
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 429
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 430
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 431
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 432
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 433
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 434
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 435
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 436
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 437
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 438
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 439
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 440
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 441
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 442
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 443
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 444
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 445
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 446
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 447
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 448
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 449
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 450
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 451
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 452
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 453
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 454
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 455
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 456
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 457
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 458
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 459
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 460
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 461
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 462
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 463
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 464
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 465
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 466
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 467
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 468
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 469
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 470
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 471
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 472
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 473
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 474
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 475
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 476
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 477
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 478
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 479
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 480
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 481
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 482
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 483
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 484
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 485
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 486
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 487
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 488
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 489
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 490
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 491
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 492
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 493
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 494
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 495
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 496
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 497
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 498
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 499
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 500
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 501
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 502
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 503
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 504
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 505
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 506
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 507
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 508
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 509
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 510
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 511
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 512
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 513
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 514
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 515
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 516
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 517
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 518
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 519
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 520
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 521
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 522
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 523
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 524
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 525
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 526
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 527
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 528
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 529
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 530
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 531
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 532
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 533
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 534
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 535
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 536
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 537
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 538
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 539
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 540
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 541
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 542
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 543
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 544
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 545
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 546
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 547
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 548
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 549
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 550
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 551
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 552
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 553
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 554
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 555
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 556
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 557
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 558
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 559
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 560
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 561
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 562
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 563
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 564
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 565
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 566
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 567
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 568
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 569
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 570
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 571
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 572
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 573
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 574
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 575
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 576
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 577
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 578
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 579
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 580
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 581
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 582
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 583
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 584
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 585
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 586
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 587
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 588
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 589
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 590
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 591
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 592
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 593
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 594
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 595
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 596
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 597
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 598
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 599
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 600
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 601
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 602
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 603
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 604
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 605
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 606
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 607
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 608
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 609
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 610
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 611
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 612
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 613
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 Inside thread_create function
 count: 614
 Inside clone in proc.c
-sleeping...
-Done sleeping...
+Clone: np->tc after inc: 2
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 pid 3 tester: trap 14 err 5 on cpu 0 eip 0x10ae addr 0xfffffffd--kill proc
+wait: 1
+Inside if condition
 $ 
 
 test threads_many FAILED (0 of 10)
@@ -3478,69 +5173,781 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
+wait: 1
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 Inside clone in proc.c
+Clone: np->tc after inc: 3
 Inside clone in proc.c
+Clone: np->tc after inc: 4
 Inside clone in proc.c
+Clone: np->tc after inc: 5
 Inside clone in proc.c
+Clone: np->tc after inc: 6
 Inside clone in proc.c
+Clone: np->tc after inc: 7
 Inside clone in proc.c
+Clone: np->tc after inc: 8
 Inside clone in proc.c
+Clone: np->tc after inc: 9
 Inside clone in proc.c
+Clone: np->tc after inc: 10
 Inside clone in proc.c
+Clone: np->tc after inc: 11
 Inside clone in proc.c
+Clone: np->tc after inc: 12
 Inside clone in proc.c
+Clone: np->tc after inc: 13
 Inside clone in proc.c
+Clone: np->tc after inc: 14
 Inside clone in proc.c
+Clone: np->tc after inc: 15
 Inside clone in proc.c
+Clone: np->tc after inc: 16
 Inside clone in proc.c
+Clone: np->tc after inc: 17
 Inside clone in proc.c
+Clone: np->tc after inc: 18
 Inside clone in proc.c
+Clone: np->tc after inc: 19
 Inside clone in proc.c
+Clone: np->tc after inc: 20
 Inside clone in proc.c
+Clone: np->tc after inc: 21
 Inside clone in proc.c
+Clone: np->tc after inc: 22
 Inside clone in proc.c
+Clone: np->tc after inc: 23
 Inside clone in proc.c
+Clone: np->tc after inc: 24
 Inside clone in proc.c
+Clone: np->tc after inc: 25
 Inside clone in proc.c
+Clone: np->tc after inc: 26
 Inside clone in proc.c
+Clone: np->tc after inc: 27
 Inside clone in proc.c
+Clone: np->tc after inc: 28
 Inside clone in proc.c
+Clone: np->tc after inc: 29
 Inside clone in proc.c
+Clone: np->tc after inc: 30
 Inside clone in proc.c
+Clone: np->tc after inc: 31
 Inside clone in proc.c
+Clone: np->tc after inc: 32
 Inside clone in proc.c
+Clone: np->tc after inc: 33
 Inside clone in proc.c
+Clone: np->tc after inc: 34
 Inside clone in proc.c
+Clone: np->tc after inc: 35
 Inside clone in proc.c
+Clone: np->tc after inc: 36
 Inside clone in proc.c
+Clone: np->tc after inc: 37
 Inside clone in proc.c
+Clone: np->tc after inc: 38
 Inside clone in proc.c
+Clone: np->tc after inc: 39
 Inside clone in proc.c
+Clone: np->tc after inc: 40
 Inside clone in proc.c
+Clone: np->tc after inc: 41
 Inside clone in proc.c
+Clone: np->tc after inc: 42
 Inside clone in proc.c
+Clone: np->tc after inc: 43
 Inside clone in proc.c
+Clone: np->tc after inc: 44
 Inside clone in proc.c
+Clone: np->tc after inc: 45
 Inside clone in proc.c
+Clone: np->tc after inc: 46
 Inside clone in proc.c
+Clone: np->tc after inc: 47
 Inside clone in proc.c
+Clone: np->tc after inc: 48
 Inside clone in proc.c
+Clone: np->tc after inc: 49
 Inside clone in proc.c
+Clone: np->tc after inc: 50
 Inside clone in proc.c
+Clone: np->tc after inc: 51
 Created 50 child threads, creator thread exiting...
-xv6...
-lapicinit: 1 0xfee00000
-cpu1: starting
-cpu0: starting
-init: starting sh
-$ 
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 1
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+wait: 51
+PASSED TEST!
 
-test threads_zombies FAILED (0 of 10)
+
+test threads_zombies PASSED (10 of 10)
  (create many threads, and make them all zombies)
- tester failed
 
 starting threads_sbrk
 
@@ -3601,11 +6008,16 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 sleeping...
 Done sleeping...
+Join: np->tc after dec: 1
+Join: tc after dec: 2
 user/tester.c:92 check (addr == (char *)stack1 + 2*PGSIZE) failed: sbrk() failed
 TEST FAILED
 
@@ -3673,61 +6085,111 @@ lapicinit: 1 0xfee00000
 cpu1: starting
 cpu0: starting
 init: starting sh
+wait: 1
 $ tester
 tester
+wait: 1
 Inside clone in proc.c
+Clone: np->tc after inc: 2
 Inside clone in proc.c
+Clone: np->tc after inc: 3
 Inside clone in proc.c
+Clone: np->tc after inc: 4
 Inside clone in proc.c
+Clone: np->tc after inc: 5
 Inside clone in proc.c
+Clone: np->tc after inc: 6
 Inside clone in proc.c
+Clone: np->tc after inc: 7
 Inside clone in proc.c
+Clone: np->tc after inc: 8
 Inside clone in proc.c
+Clone: np->tc after inc: 9
 Inside clone in proc.c
+Clone: np->tc after inc: 10
 Inside clone in proc.c
+Clone: np->tc after inc: 11
 Inside clone in proc.c
+Clone: np->tc after inc: 12
 Inside clone in proc.c
+Clone: np->tc after inc: 13
 Inside clone in proc.c
+Clone: np->tc after inc: 14
 Inside clone in proc.c
+Clone: np->tc after inc: 15
 Inside clone in proc.c
+Clone: np->tc after inc: 16
 Inside clone in proc.c
+Clone: np->tc after inc: 17
 Inside clone in proc.c
+Clone: np->tc after inc: 18
 Inside clone in proc.c
+Clone: np->tc after inc: 19
 Inside clone in proc.c
+Clone: np->tc after inc: 20
 Inside clone in proc.c
+Clone: np->tc after inc: 21
 Inside clone in proc.c
+Clone: np->tc after inc: 22
 Inside clone in proc.c
+Clone: np->tc after inc: 23
 Inside clone in proc.c
+Clone: np->tc after inc: 24
 Inside clone in proc.c
+Clone: np->tc after inc: 25
 Inside clone in proc.c
+Clone: np->tc after inc: 26
 Inside clone in proc.c
+Clone: np->tc after inc: 27
 Inside clone in proc.c
+Clone: np->tc after inc: 28
 Inside clone in proc.c
+Clone: np->tc after inc: 29
 Inside clone in proc.c
+Clone: np->tc after inc: 30
 Inside clone in proc.c
+Clone: np->tc after inc: 31
 Inside clone in proc.c
+Clone: np->tc after inc: 32
 Inside clone in proc.c
+Clone: np->tc after inc: 33
 Inside clone in proc.c
+Clone: np->tc after inc: 34
 Inside clone in proc.c
+Clone: np->tc after inc: 35
 Inside clone in proc.c
+Clone: np->tc after inc: 36
 Inside clone in proc.c
+Clone: np->tc after inc: 37
 Inside clone in proc.c
+Clone: np->tc after inc: 38
 Inside clone in proc.c
+Clone: np->tc after inc: 39
 Inside clone in proc.c
+Clone: np->tc after inc: 40
 Inside clone in proc.c
+Clone: np->tc after inc: 41
 Inside clone in proc.c
+Clone: np->tc after inc: 42
 Inside clone in proc.c
+Clone: np->tc after inc: 43
 Inside clone in proc.c
+Clone: np->tc after inc: 44
 Inside clone in proc.c
+Clone: np->tc after inc: 45
 Inside clone in proc.c
+Clone: np->tc after inc: 46
 Inside clone in proc.c
+Clone: np->tc after inc: 47
 Inside clone in proc.c
+Clone: np->tc after inc: 48
 Inside clone in proc.c
+Clone: np->tc after inc: 49
 Inside clone in proc.c
+Clone: np->tc after inc: 50
 Inside clone in proc.c
+Clone: np->tc after inc: 51
 Unblocking all 50 threads...
-sleeping...
-Done sleeping...
 sleeping...
 
 
@@ -3762,9 +6224,8 @@ test threads_many FAILED (0 of 10)
  (create and join many threads)
  tester failed
 
-test threads_zombies FAILED (0 of 10)
+test threads_zombies PASSED (10 of 10)
  (create many threads, and make them all zombies)
- tester failed
 
 test threads_sbrk FAILED (0 of 10)
  (test to make sure threads handle sbrk() correctly)
@@ -3774,6 +6235,6 @@ test lock_basic FAILED (0 of 10)
  (basic test for lock correctness)
  Timelimit (10.0s) exceeded
 
-Passed 7 of 11 tests.
-Overall 7 of 11
-Points 60 of 100
+Passed 8 of 11 tests.
+Overall 8 of 11
+Points 70 of 100
