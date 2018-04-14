@@ -58,7 +58,12 @@ int thread_create(void* start_routine, void* arg1, void* arg2) {
     // Allocate memory for the stack
     int PGSIZE = 4096;
    
-    void* ptrToFree = malloc(PGSIZE);
+    void* ptrToFree = malloc(PGSIZE * 2);
+    
+    if (ptrToFree == 0) {
+	return -1;
+    }
+    
     void* stack;
     
     // Page aligning the stack
