@@ -25,7 +25,6 @@ static void wakeup1(void *chan);
 pinit(void)
 {
     initlock(&ptable.lock, "ptable");
-    //memlock = kalloc();   
     initlock(&memlock, "memlock");
 }
 
@@ -72,9 +71,13 @@ found:
     memset(p->context, 0, sizeof *p->context);
     p->context->eip = (uint)forkret;
 
-    p->tc = kalloc();
-    *(int*)(p->tc) = 1;
+   
+    // Intialize the thread counter
+    p->tc = 0;
     
+    //p->tc = kalloc();
+    //*(int*)(p->tc) = 1;
+
     // Initialize spinlock
 
     return p;
@@ -171,9 +174,17 @@ clone(void* func, void* arg1, void* arg2, void* stack) {
 
     // Keep track of threadcounts
     np->tc = proc->tc;
-    int tc = *(int*)(np->tc);
-    *(int*)(np->tc) = tc + 1;
+    np->tc += 1;
+    proc->tc += 1;
+    
+    
+    //int tc = *(int*)(np->tc);
+    //*(int*)(np->tc) = tc + 1;
+    
+    
+    
     //cprintf("Clone: np->tc after inc: %d\n", *(int*)(np->tc));
+    //cprintf("Clone: proc->tc after inc: %d\n", *(int*)(proc->tc));
 
     //cprintf("child pid: %d\n", pid);
     //cprintf("parent pid: %d\n", proc->pid);
@@ -191,7 +202,7 @@ join(void **stack) {
     struct proc *p;
     int havekids, pid;
 
-    //int count = 0;// delete
+    //int count = 0;
 
     acquire(&ptable.lock);
     for(;;){
@@ -203,18 +214,22 @@ join(void **stack) {
 
 	    havekids = 1;
 
-	    if(p->pgdir != proc->pgdir) // zombie conditon
+	    if(p->state != ZOMBIE || p->pgdir != proc->pgdir) // zombie conditon
 		continue;
 
+	    //count = 1;
 	    //cprintf("thread id parent: %d\n", p->parent->pid);
 	    //cprintf("thread id : %d\n", p->pid);
 	    //cprintf("count: %d\n", count++);
 	    if(p->state == ZOMBIE){
-		int tc = *(int*)(p->tc);
-		*(int*)(p->tc) = tc - 1;
-		//cprintf("Join: np->tc after dec: %d\n", *(int*)(p->tc));
-		//cprintf("Join: tc after dec: %d\n", tc);
-		p->tc = NULL;
+		
+		p->tc -= 1;
+		p->tc -= 1;
+		proc->tc -= 1;
+		
+		//int tc = *(int*)(p->tc);
+		//*(int*)(p->tc) = tc - 1;
+		//p->tc = NULL;
 
 		*stack = p->stack;
 		// Found one.
@@ -229,6 +244,7 @@ join(void **stack) {
 		p->name[0] = 0;
 		p->killed = 0;
 		release(&ptable.lock);
+		//cprintf("Exiting join..\n");
 		return pid;
 	    }
 	}
@@ -236,6 +252,7 @@ join(void **stack) {
 	// No point waiting if we don't have any children.
 	if(!havekids || proc->killed){
 	    release(&ptable.lock);
+	    cprintf("Exiting join..\n");
 	    return -1;
 	}
 
@@ -244,6 +261,7 @@ join(void **stack) {
 	sleep(proc, &ptable.lock);  //DOC: wait-sleep
 	//cprintf("Done sleeping...\n");
     }
+		cprintf("Exiting join..\n");
     return 0;
 }
 
@@ -401,19 +419,28 @@ wait(void)
     struct proc *p;
     int havekids, pid;
 
+    cprintf("proc in wait: %d\n", proc->pid);
+
+
     acquire(&ptable.lock);
     for(;;){
 	// Scan through table looking for zombie children.
 	havekids = 0;
 	for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-	    if(p->parent != proc)
+	    if(p->parent != proc || proc->pgdir == p->pgdir)
 		continue;
 	    havekids = 1;
-	    cprintf("wait: %d\n", *(int*)p->tc);
-	    if(p->state == ZOMBIE && *(int*)p->tc == 1){
-		
-		cprintf("Inside if condition\n");
-		
+	   
+	    //int a = 0;
+	    //struct proc *p1;
+	    //for(p1 = ptable.proc; p1 < &ptable.proc[NPROC]; p1++){
+	    //    if (p1 != proc && p1 != p && p->pgdir == p1->pgdir && p1->state != ZOMBIE) {
+	    //        a++;
+	    //        cprintf("pid in wait: %d, a: %d   ", p1->pid, a);
+	    //    }
+	    //}
+	    
+	    if(p->state == ZOMBIE && p->tc == 0){
 		// Found one.
 		pid = p->pid;
 		kfree(p->kstack);

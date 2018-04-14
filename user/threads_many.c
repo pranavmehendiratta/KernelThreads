@@ -35,6 +35,8 @@ func1(void *arg1, void *arg2)
   // Sleep, so that (most of) the child thread runs after the main thread exits
   sleep(100);
 
+  printf(1, "Inside func1\n");
+
   // Make sure the scheduler is sane
   check(global == 1, "global is incorrect");
 
@@ -62,11 +64,15 @@ func2(void *arg1, void *arg2)
 int
 fill_ptable(void)
 {
+  
+  printf(1, "Inside fill_ptable\n");
+  
   int num_threads, pid, status, i;
 
   printf(1, "Creating child threads...\n");
   for (i = 0; i < MAX_THREADS; ++i) {
     pid = thread_create(&func1, NULL, NULL);
+    
     if (pid != -1) {
       check(pid > lastpid, "thread_create() returned the wrong pid");
       lastpid = pid;
@@ -76,13 +82,21 @@ fill_ptable(void)
       global = 1;
       break;
     }
+
+    printf(1, "pid of child: %d\n", pid);
+    printf(1, "lastpid of child: %d\n", pid);
+    printf(1, "i: %d\n", i);
   }
   num_threads = i;
+  
   check(i < MAX_THREADS, "Should not have created max threads");
 
   printf(1, "Joining all %d child threads...\n");
   for (i = 0; i < num_threads; ++i) {
     pid = thread_join();
+    
+    //printf(1, "pid of child: %d\n", pid);
+    
     status = kill(pid);
     check(status == -1, "Child was still alive after thread_join()");
     check(ppid < pid && pid <= lastpid, "thread_join() returned the wrong pid");
@@ -119,6 +133,7 @@ multiple_fork(void)
   printf(1, "Forking and joining 100 child processes...\n");
   for (i = 0; i < 100; ++i) {
     pid = fork();
+    printf(1, "Forked proc id: %d, i: %d\n", pid, i);
     check(pid >= 0, "fork() failed");
 
     if (pid > 0) {
@@ -146,6 +161,9 @@ main(int argc, char *argv[])
   void *unused;
 
   ppid = getpid();
+  
+  printf(1, "parent pid: %d\n", ppid);
+  
   check(ppid > 2, "getpid() failed");
   lastpid = ppid;
 
@@ -154,9 +172,21 @@ main(int argc, char *argv[])
   unused = malloc(rdtsc() % (PGSIZE-1) + 1);
 
   // Try to fill up process table
+  
+  printf(1, "Calling count1\n");
+  
   count1 = fill_ptable();
+  
+  printf(1, "Done Calling count1\n");
+  
   global = 0;
+  
+  printf(1, "Calling count2\n");
+  
   count2 = fill_ptable();
+  
+  printf(1, "Done Calling count2\n");
+  
   global = 0;
   check(count1 <= count2, "First round created more threads than second round");
 

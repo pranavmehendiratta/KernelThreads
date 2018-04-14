@@ -4,13 +4,16 @@
 #include "user.h"
 #include "x86.h"
 
+#define size 64
+
 struct PS {
+    int inuse;
     void* ptr;
     void* stack;
 };
 
-struct PS structPtrs[100];
-int count = 0;
+struct PS structPtrs[size];
+//int count = 0;
 //int start = 0;
 //int end = 0;
 
@@ -50,12 +53,12 @@ void lock_release(lock_t *lock) {
 }
 
 int thread_create(void* start_routine, void* arg1, void* arg2) {
-    printf(1, "Inside thread_create function\n");
+    //printf(1, "Inside thread_create function\n");
   
     // Allocate memory for the stack
     int PGSIZE = 4096;
    
-    void* ptrToFree = malloc(PGSIZE * 2);
+    void* ptrToFree = malloc(PGSIZE);
     void* stack;
     
     // Page aligning the stack
@@ -66,14 +69,23 @@ int thread_create(void* start_routine, void* arg1, void* arg2) {
 	stack = ptrToFree + offset;
     }
     
-    structPtrs[count].ptr = ptrToFree;
-    structPtrs[count].stack = stack;
+    int loc = 0;
+    for (loc = 0; loc < size; loc++) {
+	if (structPtrs[loc].inuse == 0) {
+	    structPtrs[loc].ptr = ptrToFree;
+	    structPtrs[loc].stack = stack;
+	    structPtrs[loc].inuse = 1;
+	    break;
+	}
+    }
+    //printf(1, "Loc empty: %d\n", loc);
+
     //printf(1, "ptrToFree: %p\n", ptrToFree);
     //printf(1, "ptrToFree: %p\n", structPtrs[count].ptr);
     //printf(1, "stack: %p\n", stack);
-    count++;
+    //count++;
 
-    printf(1, "Join count: %d\n", count);
+    //printf(1, "Join count: %d\n", count);
 
     //if (end == 99) 
     //    end = 0;
@@ -93,6 +105,7 @@ int thread_create(void* start_routine, void* arg1, void* arg2) {
 
     //printf(1, "calling clone from thread_create\n");
     int pid = clone(start_routine, arg1, arg2, stack);
+
 
     // return fom thread_create
     return pid;
@@ -119,16 +132,18 @@ int thread_join() {
     //printf(1, "Pointer in stack: %p\n", stack);
 
     //printf(1, "--- Free the pointer ----\n");
-    for (int i = 0; i < count; i++) {
-	//printf(1, "ptr in thread_join: %p\n", structPtrs[count].ptr);
-	//printf(1, "stack in thread_join: %p\n", structPtrs[count].stack);
-	if (structPtrs[i].stack != NULL && structPtrs[i].stack == stack) {
-	    //printf(1, "ptr that is being freed for stack in thread_join: %p\n", structPtrs[i].ptr);
+    int i;
+    for (i = 0; i < size; i++) {
+	//if (structPtrs[i].stack != NULL && structPtrs[i].stack == stack) {
+	if (structPtrs[i].inuse == 1 && structPtrs[i].stack == stack) { 
 	    free(structPtrs[i].ptr);
 	    structPtrs[i].stack = NULL;
 	    structPtrs[i].ptr = NULL;
+	    structPtrs[i].inuse = 0;
+	    break;
 	}
     }
+    //printf(1, "i empty: %d\n", i);
 
     //for (int i = start; i < end; i++) {
     //    if (structPtrs[start].ptr == NULL) {

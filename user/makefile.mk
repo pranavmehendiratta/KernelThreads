@@ -23,6 +23,7 @@ USER_PROGS := \
 	threads_sbrk\
 	threads_many\
 	clone_return\
+	fork_join\
 	lock_basic\
 	zombie
 

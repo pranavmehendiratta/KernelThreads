@@ -8,7 +8,7 @@
 #include "user.h"
 
 #define PGSIZE 0x1000
-#define NUM_THREADS 50
+#define NUM_THREADS 1
 #define check(exp, msg) if(exp) {} else {\
   printf(1, "%s:%d check (" #exp ") failed: %s\n", __FILE__, __LINE__, msg);\
   printf(1, "TEST FAILED\n");\
@@ -23,26 +23,25 @@ void
 func(void *arg1, void *arg2)
 {
   int pid;
+  pid = getpid();
+  printf(1,"pid of child thread in func: %d\n", pid);
 
   // Sleep, so that (most of) the child thread runs after the main thread exits
-  sleep(100);
+  sleep(1000);
 
   // Make sure the scheduler is sane
   check(global == 1, "global is incorrect");
 
-  pid = getpid();
-  printf(1,"pid: %d", pid);
 
   check(ppid < pid && pid <= lastpid, "getpid() returned the wrong pid");
-
-    printf(1, "Inside func\n");
 
   if (pid == lastpid) {
     sleep(100);
     printf(1, "PASSED TEST!\n");
   }
 
-  exit();
+    printf(1, "Calling exit from thread\n");
+    exit();
 
   check(0, "Continued after exit");
 }
@@ -80,7 +79,11 @@ main(int argc, char *argv[])
   } else {
     // Child process
 
+
     pid = getpid();
+
+    printf(1, "pid of the child proc about to exit: %d\n", pid);
+    
     check(pid > ppid, "fork() failed");
     ppid = pid;
     lastpid = ppid;
@@ -94,6 +97,9 @@ main(int argc, char *argv[])
 
     printf(1, "Created %d child threads, creator thread exiting..., global: %d\n", NUM_THREADS, global);
     global = 1;
+    
+    printf(1, "Parent calling exit\n");
+    
     exit();
 
     check(0, "Continued after exit");
